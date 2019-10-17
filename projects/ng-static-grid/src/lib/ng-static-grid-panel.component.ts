@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ContentChildren, QueryList, AfterViewChecked } from '@angular/core';
+import { Component, Input, ContentChildren, QueryList, AfterViewChecked } from '@angular/core';
 import { NgStaticGridItemComponent } from './ng-static-grid-item.component';
 import { DomSanitizer } from '@angular/platform-browser';
 
