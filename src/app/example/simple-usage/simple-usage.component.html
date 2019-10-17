@@ -1,0 +1,22 @@
+<ng-static-grid-panel>
+    <ng-static-grid-item width="2" height="2">
+        <div class="simple">Top Left</div>
+    </ng-static-grid-item>
+    <ng-static-grid-item x="10" width="2" height="2">
+        <div class="simple">Top Right</div>
+    </ng-static-grid-item>
+
+    <ng-static-grid-item x="4" y="4" width="3" height="3">
+      <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Card</h5>
+                <p class="card-text">Bootstrap card in the middle.</p>
+                <a [routerLink]="['/complex-usage']" class="btn btn-primary">Go complex</a>
+            </div>
+        </div>
+    </ng-static-grid-item>
+
+    <ng-static-grid-item x="1" y="11" width="10">
+        <div class="simple">Footer</div>
+    </ng-static-grid-item>
+</ng-static-grid-panel>

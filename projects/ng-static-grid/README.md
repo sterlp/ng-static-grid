@@ -1,0 +1,26 @@
+# NgStaticGrid
+
+A librariy for a simple and more static grid than gridstack.js. Main goal is that the elements can be position static on the remaining screen and stay in their position.
+
+Main purpose are full screen dashboards -- where the user wan't to have a static postion of the widgets, like on a table.
+
+## Code scaffolding
+
+Run `ng generate component component-name --project ng-static-grid` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project ng-static-grid`.
+> Note: Don't forget to add `--project ng-static-grid` or else it will be added to the default project in your `angular.json` file. 
+
+## Build
+
+Run `ng build ng-static-grid` to build the project. The build artifacts will be stored in the `dist/` directory.
+
+## Publishing
+
+After building your library with `ng build ng-static-grid`, go to the dist folder `cd dist/ng-static-grid` and run `npm publish`.
+
+## Running unit tests
+
+Run `ng test ng-static-grid` to execute the unit tests via [Karma](https://karma-runner.github.io).
+
+## Further help
+
+To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).

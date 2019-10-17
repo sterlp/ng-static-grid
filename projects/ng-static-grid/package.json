@@ -1,0 +1,18 @@
+{
+  "name": "ng-static-grid",
+  "description": "Simple angular library to build static grid views.",
+  "author": {
+    "name": "Paul Sterl"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sterlp/ng-static-grid.git"
+  },
+  "homepage": "https://github.com/sterlp/ng-static-grid",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^8.1.3",
+    "@angular/core": "^8.1.3"
+  }
+}

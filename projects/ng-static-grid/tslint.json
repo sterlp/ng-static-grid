@@ -1,0 +1,17 @@
+{
+  "extends": "../../tslint.json",
+  "rules": {
+    "directive-selector": [
+      true,
+      "attribute",
+      "ngGrid",
+      "camelCase"
+    ],
+    "component-selector": [
+      true,
+      "element",
+      "ng-static-grid",
+      "kebab-case"
+    ]
+  }
+}
