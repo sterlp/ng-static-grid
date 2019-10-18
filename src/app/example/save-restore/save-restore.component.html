@@ -1,7 +1,7 @@
 <ng-static-grid-panel columns="24" rows="24">
 
     <ng-container *ngFor="let i of [1, 2, 3, 4]">
-        <ng-static-grid-item #item1 id="# {{i}}" x="{{6 * (i-1)}}" width="4" height="4">
+        <ng-static-grid-item #item1 id="# {{i}}" x="{{6 * (i-1)}}" [y]="i" width="4" height="4">
             <div class="widget">
                 <div class="head">{{ item1.id }}</div>
                 <div class="body">
@@ -12,15 +12,16 @@
         </ng-static-grid-item>
     </ng-container>
 
-    <ng-static-grid-item #item id="Control Panel" x="2" y="15" width="20" height="9">
+    <ng-static-grid-item #item id="Control Panel" x="2" y="14" width="20" height="10">
         <div class="card" style="width: 100%; height: 100%; overflow: scroll;">
             <div class="card-body">
-                <h6 class="card-subtitle mb-2 text-muted">{{ item.id }}</h6>
-                <textarea class="form-control mb-2" rows="6" [(ngModel)]="panelData"></textarea>
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-primary" (click)="doSet()">Set</button>
-                    <button type="button" class="btn btn-primary" (click)="doRead()">Read</button>
-                </div>
+                <h6 class="card-subtitle mb-3 text-muted">{{ item.id }}
+                    <div class="btn-group float-right" role="group">
+                        <button type="button" class="btn btn-primary" (click)="doSet()">Set</button>
+                        <button type="button" class="btn btn-primary" (click)="doRead()">Read</button>
+                    </div>
+                </h6>
+                <div #jsonEditor></div>
             </div>
         </div>
     </ng-static-grid-item>

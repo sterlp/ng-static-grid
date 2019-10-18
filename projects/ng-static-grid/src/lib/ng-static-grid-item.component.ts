@@ -26,7 +26,7 @@ export class NgStaticGridItemComponent implements OnInit {
   @Input() width ? = 1;
   @Input() height ? = 1;
 
-  set model(val: NgStaticGridItemModel) {
+  setModel(val: NgStaticGridItemModel) {
     this.x = val.x;
     this.y = val.y;
     this.height = val.height;

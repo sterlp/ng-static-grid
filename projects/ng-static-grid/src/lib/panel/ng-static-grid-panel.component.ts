@@ -27,8 +27,18 @@ export class NgStaticGridPanelComponent implements OnInit, AfterViewChecked {
   @Input() width ? = '100%';
   @Input() height ? = '100%';
 
-  private internalModel: NgStaticGridModel;
-  get model(): NgStaticGridModel {
+  constructor() { }
+
+  ngOnInit(): void {
+    this.rows = INT_PARSER(this.rows);
+    this.columns = INT_PARSER(this.columns);
+  }
+
+  ngAfterViewChecked(): void {
+    this.doPosition();
+  }
+
+  getModel(): NgStaticGridModel {
     const result: NgStaticGridModel = {
       width: this.width,
       height: this.height,
@@ -48,32 +58,22 @@ export class NgStaticGridPanelComponent implements OnInit, AfterViewChecked {
     }
     return result;
   }
-  set model(val: NgStaticGridModel) {
-    this.internalModel = val;
+  setModel(val: NgStaticGridModel) {
     this.rows = INT_PARSER(val.rows) || 12;
     this.columns = INT_PARSER(val.columns) || 12;
     this.width = val.width;
     this.height = val.height;
-  }
-
-  constructor() { }
-
-  ngOnInit(): void {
-    this.rows = INT_PARSER(this.rows);
-    this.columns = INT_PARSER(this.columns);
-  }
-
-  ngAfterViewChecked(): void {
-    this.doPosition();
+    this.items.forEach(item => {
+      if (val.items && val.items[item.id]) {
+        item.setModel(val.items[item.id]);
+      }
+    });
   }
 
   doPosition() {
     const w = 100 / this.columns;
     const h = 100 / this.rows;
     this.items.forEach(item => {
-      if (this.internalModel && this.internalModel.items && this.internalModel.items[item.id]) {
-        item.model = this.internalModel.items[item.id];
-      }
       item.doPosition(w, h);
     });
   }

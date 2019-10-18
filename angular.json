@@ -28,10 +28,13 @@
               "src/assets"
             ],
             "styles": [
+              "./node_modules/jsoneditor/dist/jsoneditor.min.css",
               "./node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "./node_modules/jsoneditor/dist/jsoneditor.min.js"
+            ]
           },
           "configurations": {
             "production": {
