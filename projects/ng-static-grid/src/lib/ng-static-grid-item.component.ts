@@ -1,8 +1,10 @@
 import { Component, OnInit, Input, Renderer2, ElementRef } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import { NUMBER_PARSER } from './shared/attribute.model';
 
 /**
  * Any item can have x and y coordinates and a width and hight.
+ *
+ * x / y are 0 based.
  */
 @Component({
   selector: 'ng-static-grid-item',
@@ -14,23 +16,25 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 /* tslint:disable:curly*/
 export class NgStaticGridItemComponent implements OnInit {
-
+  /**
+   * To save and restore the postion each items needs an ID to be identified.
+   */
+  @Input() id ?: string;
   @Input() x ? = 0;
   @Input() y ? = 0;
   @Input() width ? = 1;
   @Input() height ? = 1;
 
-  constructor(private sanitizer: DomSanitizer,
-              private renderer: Renderer2,
+  constructor(private renderer: Renderer2,
               private hostElement: ElementRef) {
     renderer.addClass(hostElement.nativeElement, 'static-grid-item');
   }
 
   ngOnInit() {
-    if (typeof this.width !== 'number') this.width = this.width * 1;
-    if (typeof this.height !== 'number') this.height = this.height * 1;
-    if (typeof this.x !== 'number') this.x = this.x * 1;
-    if (typeof this.y !== 'number') this.y = this.y * 1;
+    this.width = NUMBER_PARSER(this.width);
+    this.height = NUMBER_PARSER(this.height);
+    this.x = NUMBER_PARSER(this.x);
+    this.y = NUMBER_PARSER(this.y);
   }
 
   doPosition(width: number, height: number) {

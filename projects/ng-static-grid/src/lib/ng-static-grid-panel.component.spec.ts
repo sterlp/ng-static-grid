@@ -21,5 +21,7 @@ describe('NgGridComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    expect(component.columns).toBe(12);
+    expect(component.rows).toBe(12);
   });
 });

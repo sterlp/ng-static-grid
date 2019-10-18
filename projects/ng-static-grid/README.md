@@ -4,23 +4,41 @@ A librariy for a simple and more static grid than gridstack.js. Main goal is tha
 
 Main purpose are full screen dashboards -- where the user wan't to have a static postion of the widgets, like on a table.
 
-## Code scaffolding
+# How to use
 
-Run `ng generate component component-name --project ng-static-grid` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project ng-static-grid`.
-> Note: Don't forget to add `--project ng-static-grid` or else it will be added to the default project in your `angular.json` file. 
+## Install npm module
+```
+npm install ng-static-grid --save
+```
+## Adjust app.module.ts
+```ts
+import { NgStaticGridModule } from 'ng-static-grid'
 
-## Build
+  imports: [
+    // ... omitted
+    NgStaticGridModule
+  ],
+```
+## Use it
+Default is a 12 x 12 grid with 100% width and 100% hight, if nothing set.
+```html
+<ng-static-grid-panel>
+    <ng-static-grid-item width="2" height="2">
+        Top Left
+    </ng-static-grid-item>
+    <ng-static-grid-item x="10" width="2" height="2">
+        Top Right
+    </ng-static-grid-item>
 
-Run `ng build ng-static-grid` to build the project. The build artifacts will be stored in the `dist/` directory.
+    <ng-static-grid-item x="4" y="4" width="3" height="3">
+        Center
+    </ng-static-grid-item>
 
-## Publishing
-
-After building your library with `ng build ng-static-grid`, go to the dist folder `cd dist/ng-static-grid` and run `npm publish`.
-
-## Running unit tests
-
-Run `ng test ng-static-grid` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+    <ng-static-grid-item x="1" y="11" width="10">
+        Footer
+    </ng-static-grid-item>
+</ng-static-grid-panel>
+```
+Setting the default would be look like:
+<ng-static-grid-panel rows="12" columns="12" width="100%" height="100%">
+</ng-static-grid-panel>
