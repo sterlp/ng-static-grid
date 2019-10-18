@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 import { NgStaticGridModule } from 'projects/ng-static-grid/src/public-api';
 
@@ -9,7 +10,6 @@ import { AppComponent } from './app.component';
 import { SimpleUsageComponent } from './example/simple-usage/simple-usage.component';
 import { ComplexPageComponent } from './example/complex-page/complex-page.component';
 import { SaveRestoreComponent } from './example/save-restore/save-restore.component';
-import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -24,7 +24,7 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common';
     FormsModule,
     NgStaticGridModule
   ],
-  providers: [Location, {
+  providers: [{
     provide: LocationStrategy,
     useClass: HashLocationStrategy} // needed for the github side
   ],
