@@ -2,9 +2,9 @@
 
     <ng-container *ngFor="let i of [1, 2, 3, 4]">
         <ng-static-grid-item #item1 id="# {{i}}" x="{{6 * (i-1)}}" [y]="i" width="4" height="4">
-            <div class="widget">
-                <div class="head">{{ item1.id }}</div>
-                <div class="body">
+            <div class="card custom">
+                <div class="card-header">{{ item1.id }}</div>
+                <div class="card-body">
                     <p>x:&nbsp;{{ item1.x }} / y:&nbsp;{{ item1.y }}</p>
                     <p>w:&nbsp;{{ item1.width }} / h:&nbsp;{{ item1.height }}</p>
                 </div>

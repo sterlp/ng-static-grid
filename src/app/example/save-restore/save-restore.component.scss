@@ -1,28 +1,27 @@
-.widget {
-    display: flex;
-    flex-direction: column;
+.custom {
     width: 100%;
     height: 100%;
     align-items: center;
-    justify-content: center;
-    overflow: scroll;
+    border: none;
+    color: var(--white);
 
-    .head {
-        justify-self: center;
-        border-top-left-radius: .5em;
-        border-top-right-radius: .5em;
-        background: var(--gray);
-        color: white;
-        padding: 2px 16px 0px 16px;
+    .card-header {
+        padding: .2rem 1rem 0 1rem;
+        justify-content: center;
         width: fit-content;
-    }
-    .body {
-        border-radius: .25em;
-        flex-grow: 1;
+        max-width: 100%;
+        border: none;
         background: var(--gray);
-        color: white;
+        border-top-left-radius: 0.5rem;
+        border-top-right-radius: 0.5rem;
+        font-size: 1rem;
+        font-weight: 500;
+    }
+    .card-body {
         width: 100%;
-        height: 100%;
-        padding: 8px;
+        overflow: scroll;
+        padding: .5rem;
+        background: var(--gray);
+        border-radius: 0.5rem;
     }
 }
