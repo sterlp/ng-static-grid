@@ -6,7 +6,8 @@ Main purpose are full screen dashboards -- where the user wan't to have a static
 
 # How to use
 
-[Link to NPM](https://www.npmjs.com/package/ng-static-grid)
+- **[Launch Live Preview](https://sterlp.github.io/static-grid-library/)**
+- [Link to NPM](https://www.npmjs.com/package/ng-static-grid)
 
 ## Install npm module
 ```
