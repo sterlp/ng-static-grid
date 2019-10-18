@@ -9,6 +9,7 @@ import { AppComponent } from './app.component';
 import { SimpleUsageComponent } from './example/simple-usage/simple-usage.component';
 import { ComplexPageComponent } from './example/complex-page/complex-page.component';
 import { SaveRestoreComponent } from './example/save-restore/save-restore.component';
+import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,10 @@ import { SaveRestoreComponent } from './example/save-restore/save-restore.compon
     FormsModule,
     NgStaticGridModule
   ],
-  providers: [],
+  providers: [Location, {
+    provide: LocationStrategy,
+    useClass: HashLocationStrategy} // needed for the github side
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
