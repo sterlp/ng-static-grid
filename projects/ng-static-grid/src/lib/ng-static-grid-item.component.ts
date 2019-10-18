@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Renderer2, ElementRef } from '@angular/core';
 import { NUMBER_PARSER } from './shared/attribute.model';
+import { NgStaticGridItemModel } from './panel/panel.model';
 
 /**
  * Any item can have x and y coordinates and a width and hight.
@@ -25,6 +26,14 @@ export class NgStaticGridItemComponent implements OnInit {
   @Input() width ? = 1;
   @Input() height ? = 1;
 
+  set model(val: NgStaticGridItemModel) {
+    this.x = val.x;
+    this.y = val.y;
+    this.height = val.height;
+    this.width = val.width;
+    this.ngOnInit();
+  }
+
   constructor(private renderer: Renderer2,
               private hostElement: ElementRef) {
     renderer.addClass(hostElement.nativeElement, 'static-grid-item');
@@ -33,8 +42,8 @@ export class NgStaticGridItemComponent implements OnInit {
   ngOnInit() {
     this.width = NUMBER_PARSER(this.width);
     this.height = NUMBER_PARSER(this.height);
-    this.x = NUMBER_PARSER(this.x);
-    this.y = NUMBER_PARSER(this.y);
+    this.x = NUMBER_PARSER(this.x) || 0;
+    this.y = NUMBER_PARSER(this.y) || 0;
   }
 
   doPosition(width: number, height: number) {

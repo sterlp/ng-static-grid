@@ -1,8 +1,9 @@
 {
-  "name": "static-grid-library",
+  "name": "ng-static-grid-library",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "gitside": "ng build --prod --base-href /static-grid-library/",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
