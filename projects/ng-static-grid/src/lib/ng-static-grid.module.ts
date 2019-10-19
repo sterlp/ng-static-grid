@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { NgStaticGridItemComponent } from './ng-static-grid-item.component';
+import { NgStaticGridItemComponent } from './item/ng-static-grid-item.component';
 import { NgStaticGridPanelComponent } from './panel/ng-static-grid-panel.component';
 
 

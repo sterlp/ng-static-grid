@@ -1,5 +1,5 @@
 import { Component, Input, ContentChildren, QueryList, AfterViewChecked, OnInit } from '@angular/core';
-import { NgStaticGridItemComponent } from '../ng-static-grid-item.component';
+import { NgStaticGridItemComponent } from '../item/ng-static-grid-item.component';
 import { INT_PARSER } from '../shared/attribute.model';
 import { NgStaticGridModel } from './panel.model';
 
@@ -17,6 +17,7 @@ import { NgStaticGridModel } from './panel.model';
     position: relative;
   }`]
 })
+/* tslint:disable:curly*/
 export class NgStaticGridPanelComponent implements OnInit, AfterViewChecked {
 
   @ContentChildren(NgStaticGridItemComponent) items: QueryList<NgStaticGridItemComponent>;
@@ -48,12 +49,7 @@ export class NgStaticGridPanelComponent implements OnInit, AfterViewChecked {
     };
     if (this.items) {
       this.items.forEach(i => {
-        if (i.id) {
-          result.items[i.id] = {
-            height: i.height, width: i.width,
-            x: i.x, y: i.y
-          };
-        }
+        if (i.id) result.items[i.id] = i.getModel();
       });
     }
     return result;
@@ -69,7 +65,9 @@ export class NgStaticGridPanelComponent implements OnInit, AfterViewChecked {
       }
     });
   }
-
+  /**
+   * Position all elements in the view
+   */
   doPosition() {
     const w = 100 / this.columns;
     const h = 100 / this.rows;

@@ -1,9 +1,4 @@
-export interface NgStaticGridItemModel {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-}
+import { NgStaticGridItemModel } from '../item/item.model';
 export interface NgStaticGridModel {
     rows: number;
     columns: number;

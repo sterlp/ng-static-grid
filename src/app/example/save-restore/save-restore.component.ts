@@ -15,6 +15,7 @@ export class SaveRestoreComponent implements AfterContentInit, AfterViewInit {
   constructor() { }
 
   ngAfterContentInit(): void {
+    // https://github.com/josdejong/jsoneditor
     this.jsonEditor = new JSONEditor(this.jsonEditorEl.nativeElement, {});
   }
   ngAfterViewInit(): void {
