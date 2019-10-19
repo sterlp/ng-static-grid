@@ -23,9 +23,9 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
   @Input() strokeStyle: string | CanvasGradient | CanvasPattern = '#ae2424';
   /**
    * Optional color of the shadow.
-   * @optional default #ae2424
+   * @optional default #343a40
    */
-  @Input() shadowColor ? = '#ae2424';
+  @Input() shadowColor ? = '#343a40';
   /**
    * Optional global alpha to set.
    */
