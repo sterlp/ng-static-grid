@@ -1,4 +1,4 @@
-import { Component, Input, ContentChildren, QueryList, AfterViewChecked, OnInit } from '@angular/core';
+import { Component, Input, ContentChildren, QueryList, AfterViewChecked, OnInit, ElementRef } from '@angular/core';
 import { NgStaticGridItemComponent } from '../item/ng-static-grid-item.component';
 import { INT_PARSER } from '../shared/attribute.model';
 import { NgStaticGridModel } from './panel.model';
@@ -28,7 +28,7 @@ export class NgStaticGridPanelComponent implements OnInit, AfterViewChecked {
   @Input() width ? = '100%';
   @Input() height ? = '100%';
 
-  constructor() { }
+  constructor(public hostElement: ElementRef) { }
 
   ngOnInit(): void {
     this.rows = INT_PARSER(this.rows);

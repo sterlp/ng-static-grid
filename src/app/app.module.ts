@@ -10,13 +10,15 @@ import { AppComponent } from './app.component';
 import { SimpleUsageComponent } from './example/simple-usage/simple-usage.component';
 import { ComplexPageComponent } from './example/complex-page/complex-page.component';
 import { SaveRestoreComponent } from './example/save-restore/save-restore.component';
+import { GridCanvasComponent } from './example/grid-canvas/grid-canvas.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SimpleUsageComponent,
     ComplexPageComponent,
-    SaveRestoreComponent
+    SaveRestoreComponent,
+    GridCanvasComponent
   ],
   imports: [
     BrowserModule,
