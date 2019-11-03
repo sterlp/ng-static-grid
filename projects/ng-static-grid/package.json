@@ -22,7 +22,7 @@
     "url": "https://github.com/sterlp/ng-static-grid/issues"
   },
   "markdown": "github",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "peerDependencies": {
     "@angular/common": "^8.1.3",
     "@angular/core": "^8.1.3"
