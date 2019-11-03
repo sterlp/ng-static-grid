@@ -1,11 +1,24 @@
 <ng-static-grid-canvas
-    gridSize="24"
-    gridStartY="8"
-    gridEndY="21"
+    gridSizeX="32"
+    gridSizeY="24"
+
+    gridStartX="2"
+    gridEndX="30"
+    gridStartY="2"
+    gridEndY="20"
+    strokeGidFactor="2"
+
     alpha="0.75">
 </ng-static-grid-canvas>
 
 <ng-static-grid-panel columns="32" rows="24">
+    <ng-static-grid-item x="0" y="2" width="2" height="2" class="with-border d-flex justify-content-center">
+        <span style="align-self: center;">Start</span></ng-static-grid-item>
+    <ng-static-grid-item x="0" y="20" width="2" height="2" class="with-border d-flex justify-content-center">
+        <span style="align-self: center;">End</span></ng-static-grid-item>    
+    <ng-static-grid-item x="30" y="2" width="2" height="20" class="with-border">
+    </ng-static-grid-item>
+
     <ng-container *ngFor="let i of items">
         <ng-static-grid-item [x]="i.x" [y]="i.y" [width]="i.w" [height]="i.h">
             <div class="card">
@@ -17,7 +30,7 @@
                 </ul>
             </div>
         </ng-static-grid-item>
-        <ng-static-grid-item x="14" y="12" width="18" height="2">
+        <ng-static-grid-item x="9" y="10" width="18" height="2">
             <h1 class="display-4">Dashboard #24</h1>
         </ng-static-grid-item>
     </ng-container>

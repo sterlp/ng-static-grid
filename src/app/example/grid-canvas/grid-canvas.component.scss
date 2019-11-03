@@ -4,7 +4,7 @@
 .card {
     width: 100%;
     height: 100%;
-    overflow: scroll;
+    overflow: auto;
 }
 
 .list-group-item {
@@ -12,4 +12,8 @@
 }
 .card-header {
     padding: .5rem 1rem
+}
+
+.with-border {
+    border: 1px solid var(--secondary);
 }

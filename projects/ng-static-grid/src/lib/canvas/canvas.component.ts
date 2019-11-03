@@ -31,23 +31,43 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
    */
   @Input() alpha ?: number;
 
-  @Input() gridSize = 24;
+  @Input() gridSizeX = 24;
+  @Input() gridSizeY = 24;
 
-  @Input() gridStartX = 2;
-  @Input() gridStartY = 6;
-  @Input() gridEndX = 22;
-  @Input() gridEndY = 20;
+  @Input() gridStartX: number;
+  @Input() gridEndX: number;
+
+  @Input() gridStartY: number;
+  @Input() gridEndY: number;
   /**
    * Takes the min of width or hight and mutiplies it with this number.
    * So that the line scales with the available screen size.
    */
-  @Input() strokeGidFactor = 3;
+  @Input() strokeGidFactor: number;
 
   private _timerHandle: any;
-
+  private _xFactor: number;
+  private _yFactor: number;
   constructor(private hostElement: ElementRef) { }
 
   ngOnInit() {
+    this._xFactor = Math.floor(this.gridSizeX / 12);
+    this._yFactor = Math.floor(this.gridSizeY / 12);
+    if (this.strokeGidFactor === null) {
+      this.strokeGidFactor = Math.min(this._xFactor, this._yFactor);
+    }
+    if (this.gridStartX == null) {
+      this.gridStartX = this._xFactor;
+    }
+    if (this.gridEndX == null) {
+      this.gridEndX = this.gridSizeX - this.gridStartX;
+    }
+    if (this.gridStartY == null) {
+      this.gridStartY = this._yFactor;
+    }
+    if (this.gridEndY == null) {
+      this.gridEndY = this.gridSizeY - this.gridStartY;
+    }
   }
 
   ngAfterContentInit(): void {
@@ -58,7 +78,7 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
       } else {
         this.coverElement = this.hostElement;
       }
-    } //else console.info('coverElement set ...', this.coverElement);
+    } // else console.info('coverElement set ...', this.coverElement);
     if (window) this.adjustCanvas(window.innerHeight, window.innerWidth);
   }
 
@@ -72,7 +92,7 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
   adjustCanvas(height: number, width: number): void {
     if (this.canvas) {
       const rect: DOMRect = this.coverElement.nativeElement.getBoundingClientRect();
-      //console.info('adjustCanvas', rect, width, height);
+      // console.info('adjustCanvas', rect, width, height);
       this.canvas.nativeElement.height = height - rect.y;
       this.canvas.nativeElement.width = width - rect.x;
 
@@ -82,52 +102,88 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
   }
 
   drawCurvedArrow() {
-    const canvas = this.canvas.nativeElement;
-    const context: CanvasRenderingContext2D = canvas.getContext('2d');
+    if (this.canvas && this.canvas.nativeElement
+      && this.canvas.nativeElement.getContext('2d')) {
 
-    context.lineWidth = Math.min(canvas.width, canvas.height) / 7;
-    // https://www.w3schools.com/graphics/canvas_gradients.asp
-    context.strokeStyle = this.strokeStyle;
-    if (this.shadowColor) context.shadowColor = this.shadowColor;
-    if (this.alpha) context.globalAlpha = NUMBER_PARSER(this.alpha);
+      const canvas = this.canvas.nativeElement;
+      const context: CanvasRenderingContext2D = canvas.getContext('2d');
 
-    const step = this.gridSize;
-    const gridStepFactor = this.gridSize / 6;
-    const oneX = canvas.width / step; // one step in X
-    const oneY = canvas.height / step; // one step in Y
-    const startX = oneX * this.gridStartX;
-    const startY = oneY * this.gridStartY;
-    const endX = oneX * this.gridEndX;
-    const endY = oneY * this.gridEndY;
+      context.lineWidth = Math.min(canvas.width, canvas.height) / 7;
+      // https://www.w3schools.com/graphics/canvas_gradients.asp
+      context.strokeStyle = this.strokeStyle;
+      context.fillStyle = this.strokeStyle;
+      if (this.shadowColor) context.shadowColor = this.shadowColor;
+      if (this.alpha) context.globalAlpha = NUMBER_PARSER(this.alpha);
 
-    context.lineWidth = Math.min(oneX, oneY) * this.strokeGidFactor;
-    if (this.shadowColor) context.shadowBlur = context.lineWidth / this.strokeGidFactor;
+      const oneX = canvas.width / this.gridSizeX; // one step in X
+      const oneY = canvas.height / this.gridSizeY; // one step in Y
 
-    function animate(current: number) {
-      context.clearRect(0, 0, canvas.width, canvas.height);
-      context.beginPath();
-      // <----
-      context.moveTo(endX, startY);
-      context.lineTo(startX + oneX * gridStepFactor, startY);
+      context.lineWidth = Math.min(oneX, oneY) * this.strokeGidFactor;
+      if (this.shadowColor) context.shadowBlur = context.lineWidth / this.strokeGidFactor;
 
-      //   --
-      //  |
-      //   --
-      // https://www.w3schools.com/tags/canvas_beziercurveto.asp
-      context.bezierCurveTo(
-        startX - oneX / gridStepFactor, startY,
-        startX - oneX / gridStepFactor, endY,
-        startX + oneX * gridStepFactor, endY);
+      const halfLine = context.lineWidth / 2; // we have to take the line with into account
+      const startX = oneX * this.gridStartX;
+      const startY = oneY * this.gridStartY;
+      const endX = oneX * this.gridEndX;
+      const endY = oneY * this.gridEndY;
 
-      // --->
-      context.lineTo(endX - oneX * 2, endY);
+      // console.info(this.gridStartX, this.gridStartY, this.gridEndX, this.gridEndY);
+      // console.info(startX, startY, endX, endY);
 
-      // >
-      context.lineTo(endX - oneX * 1.99, endY);
-      context.lineTo(endX - oneX * 3.5, endY - oneY * 2);
-      context.stroke();
-      context.closePath();
+      this.draw(context, canvas,
+                startX, endX,
+                startY, endY,
+                oneX, oneY);
     }
-    animate(1);
+  }
+
+  private draw(context: CanvasRenderingContext2D, canvas: any,
+               startX: number, endX: number,
+               startY: number, endY: number,
+               oneX: number, oneY: number) {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    const lineX = oneX * this.strokeGidFactor;
+    const lineY = oneY * this.strokeGidFactor;
+
+    startX = startX - 1;
+    context.lineWidth = 1;
+
+    // ---->
+    context.beginPath();
+    context.moveTo(startX , startY);
+    context.lineTo(endX - lineX * 3, startY);
+
+    //   --
+    //     |
+    //   --
+    // https://www.w3schools.com/tags/canvas_beziercurveto.asp
+
+    context.bezierCurveTo(
+      endX + lineX, startY,
+      endX + lineX, endY + lineY,
+      endX - lineX * 3, endY + lineY);
+
+    // <---
+    context.lineTo(startX + lineX, endY + lineY);
+
+    // arrow head
+    context.lineTo(startX + lineX, endY + lineY * 1.5 );
+    context.lineTo(startX, endY + lineY / 2);
+    context.lineTo(startX + lineX, endY - lineY / 2 );
+    context.lineTo(startX + lineX, endY);
+    // --->
+    context.lineTo(endX - lineX * 3, endY);
+    // --
+    //   |
+    // --
+    context.bezierCurveTo(
+      endX - lineX / 3, endY,
+      endX - lineX / 3, startY + lineY,
+      endX - lineX * 3, startY + lineY);
+
+    context.lineTo(startX, startY + lineY);
+
+    context.closePath();
+    context.fill();
   }
 }

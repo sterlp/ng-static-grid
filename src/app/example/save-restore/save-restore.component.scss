@@ -19,7 +19,7 @@
     }
     .card-body {
         width: 100%;
-        overflow: scroll;
+        overflow: auto;
         padding: .5rem;
         background: var(--gray);
         border-radius: 0.5rem;
