@@ -14,7 +14,6 @@ export class GridCanvasComponent implements OnInit {
 
     { x: 15,  y: 16, w: 8, h: 5, id: '# 4'},
     { x: 5,  y: 16, w: 8, h: 5, id: '# 5'},
-
   ];
 
   constructor() { }

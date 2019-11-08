@@ -86,7 +86,8 @@ export const NUMBER_PARSER: AttributeParser<number> = (source ?) => {
 
     const result = source * 1;
     if (isNaN(result)) return null;
-    else return result;
+
+    return result;
 };
 /**
  * Like the NUMBER_PARSER but always returns integers.
