@@ -4,6 +4,7 @@ import { SimpleUsageComponent } from './example/simple-usage/simple-usage.compon
 import { ComplexPageComponent } from './example/complex-page/complex-page.component';
 import { SaveRestoreComponent } from './example/save-restore/save-restore.component';
 import { GridCanvasComponent } from './example/grid-canvas/grid-canvas.component';
+import {GridCanvasAltComponent} from './example/grid-canvas-alt/grid-canvas-alt.component';
 
 
 const routes: Routes = [
@@ -11,7 +12,8 @@ const routes: Routes = [
   {path: 'simple-usage', component: SimpleUsageComponent},
   {path: 'complex-usage', component: ComplexPageComponent},
   {path: 'save-restore', component: SaveRestoreComponent},
-  {path: 'grid-canvas', component: GridCanvasComponent}
+  {path: 'grid-canvas', component: GridCanvasComponent},
+  {path: 'grid-canvas-alt', component: GridCanvasAltComponent}
 ];
 
 @NgModule({

@@ -1,0 +1,38 @@
+<ng-static-grid-canvas
+    gridSizeX="32"
+    gridSizeY="24"
+
+    gridStartX="2"
+    gridEndX="30"
+    gridStartY="2"
+    gridEndY="20"
+    strokeGridFactor="2"
+    alpha="0.75"
+    
+    arrowHead="bottom">
+</ng-static-grid-canvas>
+
+<ng-static-grid-panel columns="32" rows="24">
+    <ng-static-grid-item x="0" y="2" width="2" height="2" class="with-border d-flex justify-content-center">
+        <span style="align-self: center;">Start</span></ng-static-grid-item>
+    <ng-static-grid-item x="0" y="20" width="2" height="2" class="with-border d-flex justify-content-center">
+        <span style="align-self: center;">End</span></ng-static-grid-item>    
+    <ng-static-grid-item x="30" y="2" width="2" height="20" class="with-border">
+    </ng-static-grid-item>
+
+    <ng-container *ngFor="let i of items">
+        <ng-static-grid-item [x]="i.x" [y]="i.y" [width]="i.w" [height]="i.h">
+            <div class="card">
+                <div class="card-header">{{ i.id }}</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Cras justo odio</li>
+                    <li class="list-group-item">Dapibus ac facilisis in</li>
+                    <li class="list-group-item">Vestibulum at eros</li>
+                </ul>
+            </div>
+        </ng-static-grid-item>
+        <ng-static-grid-item x="5" y="10" width="18" height="2">
+            <h1 class="display-4">Dashboard #24</h1>
+        </ng-static-grid-item>
+    </ng-container>
+</ng-static-grid-panel>
