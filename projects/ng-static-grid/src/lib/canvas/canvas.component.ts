@@ -251,12 +251,8 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
         //   --
         //     |
         //   --
-        // https://www.w3schools.com/tags/canvas_beziercurveto.asp
         this.drawCanvasCurve(endX, startY, radius, context, 'top-end');
         this.drawCanvasCurve(endX, endY + lineY, radius, context, 'bottom-end');
-
-        // <   ---
-        context.lineTo(startX + lineX, endY + lineY);
 
         // arrow head bottom
         if (this.arrowHead === 'bottom') {
@@ -346,6 +342,7 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
 
     private drawCanvasArrow(context, leftArrowPointX, leftArrowPointY, lineWidth, direction: 'left' | 'right') {
         if (direction === 'left') {
+            context.lineTo(leftArrowPointX, leftArrowPointY);
             context.lineTo(leftArrowPointX, leftArrowPointY + lineWidth / 2);
             context.lineTo(leftArrowPointX - lineWidth, leftArrowPointY - lineWidth / 2);
             context.lineTo(leftArrowPointX, leftArrowPointY - lineWidth - (lineWidth / 2));
