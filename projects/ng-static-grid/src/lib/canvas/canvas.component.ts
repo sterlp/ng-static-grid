@@ -246,12 +246,8 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
             context.moveTo(startX, startY);
         } else {
             context.moveTo(startX + lineX, startY + lineY);
-            context.lineTo(startX + lineX, startY + lineY * 1.5);
-            context.lineTo(startX, startY + lineY / 2);
-            context.lineTo(startX + lineX, startY - lineY / 2);
-            context.lineTo(startX + lineX, startY);
+            this.drawCanvasArrow(context, startX + lineX, startY + lineY, lineY, 'left');
         }
-
         //   --
         //     |
         //   --
@@ -264,10 +260,7 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
 
         // arrow head bottom
         if (this.arrowHead === 'bottom') {
-            context.lineTo(startX + lineX, endY + lineY * 1.5);
-            context.lineTo(startX, endY + lineY / 2);
-            context.lineTo(startX + lineX, endY - lineY / 2);
-            context.lineTo(startX + lineX, endY);
+            this.drawCanvasArrow(context, startX + lineX, endY + lineY, lineY, 'left');
         } else {
             context.lineTo(startX, endY + lineY);
             context.lineTo(startX, endY);
@@ -309,7 +302,6 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
             context.lineTo(startX, startY + lineY / 2);
             context.lineTo(startX + lineX, startY - lineY / 2);
             context.lineTo(startX + lineX, startY);
-            context.lineTo(endX - lineX * 3, startY);
         }
 
         //   --
@@ -348,9 +340,17 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
             endX - lineX * 3 - xMove, startY + lineY);
 
         context.lineTo(startX, startY + lineY);
-
         context.closePath();
         context.fill();
+    }
+
+    private drawCanvasArrow(context, leftArrowPointX, leftArrowPointY, lineWidth, direction: 'left' | 'right') {
+        if (direction === 'left') {
+            context.lineTo(leftArrowPointX, leftArrowPointY + lineWidth / 2);
+            context.lineTo(leftArrowPointX - lineWidth, leftArrowPointY - lineWidth / 2);
+            context.lineTo(leftArrowPointX, leftArrowPointY - lineWidth - (lineWidth / 2));
+            context.lineTo(leftArrowPointX, leftArrowPointY - lineWidth);
+        }
     }
 
     private drawCanvasCurve(
