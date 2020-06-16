@@ -239,36 +239,39 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
         startX = startX - 1;
         context.lineWidth = 1;
 
-        // ---->
         context.beginPath();
 
         if (this.arrowHead === 'bottom') {
-            context.moveTo(startX, startY);
+            context.moveTo(startX, startY + lineY);
+            context.lineTo(startX, startY);
         } else {
             context.moveTo(startX + lineX, startY + lineY);
             this.drawCanvasArrow(context, startX + lineX, startY + lineY, lineY, 'left');
         }
-        //   --
-        //     |
-        //   --
-        this.drawCanvasCurve(endX, startY, radius, context, 'top-end');
-        this.drawCanvasCurve(endX, endY + lineY, radius, context, 'bottom-end');
 
-        // arrow head bottom
+        // first curve
+        this.drawCanvasCurve(endX, startY, radius, context, 'top-end');
+        this.drawCanvasCurve(endX, startY + curveStep + lineY, radius, context, 'bottom-end');
+
+        // second curve
+        this.drawCanvasCurve(startX + lineX, startY + curveStep + lineY, radius, context, 'inner-top-start');
+        this.drawCanvasCurve(startX + lineX, endY, radius, context, 'inner-bottom-start');
+
         if (this.arrowHead === 'bottom') {
-            this.drawCanvasArrow(context, startX + lineX, endY + lineY, lineY, 'left');
+            this.drawCanvasArrow(context, endX - lineX, endY, lineY, 'right');
+
         } else {
-            context.lineTo(startX, endY + lineY);
-            context.lineTo(startX, endY);
+            context.lineTo(endX, endY);
+            context.lineTo(endX, endY + lineY);
         }
 
-        // --
-        //   |
-        // --
-        this.drawCanvasCurve(endX - lineX, endY, radius, context, 'inner-bottom-end');
-        this.drawCanvasCurve(endX - lineX, startY + lineY, radius, context, 'inner-top-end');
+        // third curve
+        this.drawCanvasCurve(startX, endY + lineY, radius, context, 'bottom-start');
+        this.drawCanvasCurve(startX, startY + curveStep, radius, context, 'top-start');
 
-        context.lineTo(startX, startY + lineY);
+        // fourth curve
+        this.drawCanvasCurve(endX - lineX, startY + curveStep, radius, context, 'inner-bottom-end');
+        this.drawCanvasCurve(endX - lineX, startY + lineY, radius, context, 'inner-top-end');
 
         context.closePath();
         context.fill();
@@ -348,6 +351,13 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
             context.lineTo(leftArrowPointX, leftArrowPointY - lineWidth - (lineWidth / 2));
             context.lineTo(leftArrowPointX, leftArrowPointY - lineWidth);
         }
+        if (direction === 'right') {
+            context.lineTo(leftArrowPointX, leftArrowPointY);
+            context.lineTo(leftArrowPointX, leftArrowPointY - lineWidth / 2);
+            context.lineTo(leftArrowPointX + lineWidth, leftArrowPointY + lineWidth / 2);
+            context.lineTo(leftArrowPointX, leftArrowPointY + lineWidth + (lineWidth / 2));
+            context.lineTo(leftArrowPointX, leftArrowPointY + lineWidth);
+        }
     }
 
     private drawCanvasCurve(
@@ -355,31 +365,39 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
         cornerY: number,
         radius: number,
         context,
-        position: 'top-start' | 'top-end' | 'bottom-start' | 'bottom-end' | 'inner-bottom-end' | 'inner-top-end') {
+        position: 'top-start' | 'top-end' | 'bottom-start' | 'bottom-end' | 'inner-bottom-end' | 'inner-top-end' | 'inner-top-start' | 'inner-bottom-start') {
         switch (position) {
             case 'top-end':
                 context.lineTo(cornerX - radius, cornerY);
                 context.quadraticCurveTo(cornerX, cornerY, cornerX, cornerY + radius);
                 break;
             case 'top-start':
-                context.lineTo(cornerX + radius, cornerY);
-                context.quadraticCurveTo(cornerX, cornerY, cornerX, cornerY - radius);
+                context.lineTo(cornerX, cornerY + radius);
+                context.quadraticCurveTo(cornerX, cornerY, cornerX + radius, cornerY);
                 break;
             case 'bottom-end':
                 context.lineTo(cornerX, cornerY - radius);
                 context.quadraticCurveTo(cornerX, cornerY, cornerX - radius, cornerY);
                 break;
             case 'bottom-start':
-                context.lineTo(cornerX, cornerY - radius);
-                context.quadraticCurveTo(cornerX, cornerY, cornerX + radius, cornerY);
-                break;
-            case 'inner-bottom-end':
-                context.lineTo(cornerX - radius, cornerY);
+                context.lineTo(cornerX + radius, cornerY);
                 context.quadraticCurveTo(cornerX, cornerY, cornerX, cornerY - radius);
                 break;
             case 'inner-top-end':
                 context.lineTo(cornerX, cornerY + radius);
                 context.quadraticCurveTo(cornerX, cornerY, cornerX - radius, cornerY);
+                break;
+            case 'inner-top-start':
+                context.lineTo(cornerX + radius, cornerY);
+                context.quadraticCurveTo(cornerX, cornerY, cornerX, cornerY + radius);
+                break;
+            case 'inner-bottom-end':
+                context.lineTo(cornerX - radius, cornerY);
+                context.quadraticCurveTo(cornerX, cornerY, cornerX, cornerY - radius);
+                break;
+            case 'inner-bottom-start':
+                context.lineTo(cornerX, cornerY - radius);
+                context.quadraticCurveTo(cornerX, cornerY, cornerX + radius, cornerY);
                 break;
         }
     }
