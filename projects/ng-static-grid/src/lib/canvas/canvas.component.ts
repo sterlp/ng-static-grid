@@ -2,6 +2,10 @@ import {AfterContentInit, Component, ElementRef, HostListener, Input, OnInit, Vi
 import {INT_PARSER, NUMBER_PARSER} from '../shared/attribute.model';
 
 
+enum LineType {
+    STANDARD = 'standard',
+    EXTENDED = 'extended'
+}
 
 @Component({
     selector: 'ng-static-grid-canvas',
@@ -46,6 +50,21 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
     private _contentSet = false;
 
     constructor(private hostElement: ElementRef) {
+    }
+
+    private _lineType = LineType.STANDARD;
+
+    @Input() set lineType(type: string) {
+        switch (type) {
+            case LineType.STANDARD:
+                this._lineType = type;
+                break;
+            case LineType.EXTENDED:
+                this._lineType = type;
+                break;
+            default:
+                this._lineType = LineType.STANDARD;
+        }
     }
 
     private _strokeStyle: string | CanvasGradient | CanvasPattern = '#ae2424';
@@ -187,18 +206,95 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
 
             // console.info(this.gridStartX, this.gridStartY, this.gridEndX, this.gridEndY);
             // console.info(startX, startY, endX, endY);
-
-            this.draw(context, canvas,
-                startX, endX,
-                startY, endY,
-                oneX, oneY);
+            switch (this._lineType) {
+                case LineType.STANDARD:
+                    this.drawStandardLine(context, canvas,
+                        startX, endX,
+                        startY, endY,
+                        oneX, oneY);
+                    break;
+                case LineType.EXTENDED:
+                    this.drawExtendedLine(context, canvas,
+                        startX, endX,
+                        startY, endY,
+                        oneX, oneY);
+                    break;
+            }
         }
     }
 
-    private draw(context: CanvasRenderingContext2D, canvas: any,
-                 startX: number, endX: number,
-                 startY: number, endY: number,
-                 oneX: number, oneY: number) {
+    private drawExtendedLine(context: CanvasRenderingContext2D, canvas: any,
+                             startX: number, endX: number,
+                             startY: number, endY: number,
+                             oneX: number, oneY: number) {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        const lineX = oneX * this.strokeGridFactor;
+        const lineY = oneY * this.strokeGridFactor;
+
+        startX = startX - 1;
+        context.lineWidth = 1;
+
+        // ---->
+        context.beginPath();
+
+        if (this.arrowHead === 'bottom') {
+            context.moveTo(startX, startY);
+            context.lineTo(endX - lineX * 3, startY);
+        } else {
+            context.moveTo(startX + lineX, startY + lineY);
+            context.lineTo(startX + lineX, startY + lineY * 1.5);
+            context.lineTo(startX, startY + lineY / 2);
+            context.lineTo(startX + lineX, startY - lineY / 2);
+            context.lineTo(startX + lineX, startY);
+            context.lineTo(endX - lineX * 3, startY);
+        }
+
+        //   --
+        //     |
+        //   --
+        // https://www.w3schools.com/tags/canvas_beziercurveto.asp
+        context.bezierCurveTo(
+            endX + lineX, startY,
+            endX + lineX, endY + lineY,
+            endX - lineX * 3, endY + lineY);
+
+        // <---
+        context.lineTo(startX + lineX, endY + lineY);
+
+        // arrow head bottom
+        if (this.arrowHead === 'bottom') {
+            context.lineTo(startX + lineX, endY + lineY * 1.5);
+            context.lineTo(startX, endY + lineY / 2);
+            context.lineTo(startX + lineX, endY - lineY / 2);
+            context.lineTo(startX + lineX, endY);
+        } else {
+            context.lineTo(startX, endY + lineY);
+            context.lineTo(startX, endY);
+        }
+
+
+        const xMove = Math.sqrt(lineX);
+        // --->
+        context.lineTo(endX - lineX * 3 - xMove, endY);
+        // --
+        //   |
+        // --
+        context.bezierCurveTo(
+            endX + xMove, endY,
+            endX + xMove, startY + lineY,
+            endX - lineX * 3 - xMove, startY + lineY);
+
+        context.lineTo(startX, startY + lineY);
+
+        context.closePath();
+        context.fill();
+    }
+
+    private drawStandardLine(context: CanvasRenderingContext2D, canvas: any,
+                             startX: number, endX: number,
+                             startY: number, endY: number,
+                             oneX: number, oneY: number) {
+
         context.clearRect(0, 0, canvas.width, canvas.height);
         const lineX = oneX * this.strokeGridFactor;
         const lineY = oneY * this.strokeGridFactor;
