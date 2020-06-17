@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GridCanvasAltComponent } from './grid-canvas-alt.component';
+import { GridCanvasSComponent } from './grid-canvas-s.component';
 
 describe('GridCanvasComponent', () => {
-  let component: GridCanvasAltComponent;
-  let fixture: ComponentFixture<GridCanvasAltComponent>;
+  let component: GridCanvasSComponent;
+  let fixture: ComponentFixture<GridCanvasSComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GridCanvasAltComponent ]
+      declarations: [ GridCanvasSComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(GridCanvasAltComponent);
+    fixture = TestBed.createComponent(GridCanvasSComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

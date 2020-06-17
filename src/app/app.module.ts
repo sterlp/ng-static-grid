@@ -11,7 +11,7 @@ import {SimpleUsageComponent} from './example/simple-usage/simple-usage.componen
 import {ComplexPageComponent} from './example/complex-page/complex-page.component';
 import {SaveRestoreComponent} from './example/save-restore/save-restore.component';
 import {GridCanvasComponent} from './example/grid-canvas/grid-canvas.component';
-import {GridCanvasAltComponent} from "./example/grid-canvas-alt/grid-canvas-alt.component";
+import {GridCanvasSComponent} from "./example/grid-canvas-alt/grid-canvas-s.component";
 
 @NgModule({
     declarations: [
@@ -20,7 +20,7 @@ import {GridCanvasAltComponent} from "./example/grid-canvas-alt/grid-canvas-alt.
         ComplexPageComponent,
         SaveRestoreComponent,
         GridCanvasComponent,
-        GridCanvasAltComponent
+        GridCanvasSComponent
     ],
     imports: [
         BrowserModule,

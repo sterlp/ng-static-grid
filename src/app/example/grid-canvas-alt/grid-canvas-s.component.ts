@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-grid-canvas-alt',
-  templateUrl: './grid-canvas-alt.component.html',
-  styleUrls: ['./grid-canvas-alt.component.scss']
+  templateUrl: './grid-canvas-s.component.html',
+  styleUrls: ['./grid-canvas-s.component.scss']
 })
-export class GridCanvasAltComponent implements OnInit {
+export class GridCanvasSComponent implements OnInit {
 
   items = [
     { x: 5, y: 1, w: 8, h: 5, id: '# 1'},

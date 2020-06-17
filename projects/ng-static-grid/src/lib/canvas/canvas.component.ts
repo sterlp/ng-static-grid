@@ -3,8 +3,8 @@ import {INT_PARSER, NUMBER_PARSER} from '../shared/attribute.model';
 
 
 enum LineType {
-    STANDARD = 'standard',
-    EXTENDED = 'extended'
+    U_TYPE = 'u-type',
+    S_TYPE = 's-type'
 }
 
 @Component({
@@ -45,6 +45,7 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
      * @memberof NgStaticGridCanvasComponent
      */
     @Input() arrowHead = 'bottom';
+    @Input() reversed: boolean;
     private _xFactor: number;
     private _yFactor: number;
     private _contentSet = false;
@@ -52,18 +53,18 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
     constructor(private hostElement: ElementRef) {
     }
 
-    private _lineType = LineType.STANDARD;
+    private _lineType = LineType.U_TYPE;
 
     @Input() set lineType(type: string) {
         switch (type) {
-            case LineType.STANDARD:
+            case LineType.U_TYPE:
                 this._lineType = type;
                 break;
-            case LineType.EXTENDED:
+            case LineType.S_TYPE:
                 this._lineType = type;
                 break;
             default:
-                this._lineType = LineType.STANDARD;
+                this._lineType = LineType.U_TYPE;
         }
     }
 
@@ -176,11 +177,11 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
             this.canvas.nativeElement.height = height - rect.top || 0;
             this.canvas.nativeElement.width = width - rect.left || 0;
 
-            this.drawCurvedArrow();
+            this.prepareLine();
         }
     }
 
-    drawCurvedArrow() {
+    prepareLine() {
         if (this.canvas && this.canvas.nativeElement
             && this.canvas.nativeElement.getContext('2d')) {
 
@@ -207,27 +208,35 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
             // console.info(this.gridStartX, this.gridStartY, this.gridEndX, this.gridEndY);
             // console.info(startX, startY, endX, endY);
             switch (this._lineType) {
-                case LineType.STANDARD:
-                    this.drawStandardLine(context, canvas,
+                case LineType.U_TYPE:
+                    this.drawULine(context, canvas,
                         startX, endX,
                         startY, endY,
                         oneX, oneY);
                     break;
-                case LineType.EXTENDED:
-                    this.drawExtendedLine(context, canvas,
-                        startX, endX,
-                        startY, endY,
-                        oneX, oneY);
+                case LineType.S_TYPE:
+                    if (this.reversed) {
+                        this.drawReversedULine(context, canvas,
+                            startX, endX,
+                            startY, endY,
+                            oneX, oneY);
+                    } else {
+                        this.drawSLine(context, canvas,
+                            startX, endX,
+                            startY, endY,
+                            oneX, oneY);
+                    }
                     break;
+
             }
         }
     }
 
 
-    private drawExtendedLine(context: CanvasRenderingContext2D, canvas: any,
-                             startX: number, endX: number,
-                             startY: number, endY: number,
-                             oneX: number, oneY: number) {
+    private drawSLine(context: CanvasRenderingContext2D, canvas: any,
+                      startX: number, endX: number,
+                      startY: number, endY: number,
+                      oneX: number, oneY: number) {
         context.clearRect(0, 0, canvas.width, canvas.height);
         const lineX = oneX * this.strokeGridFactor - 10;
         const lineY = oneY * this.strokeGridFactor;
@@ -277,10 +286,10 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
         context.fill();
     }
 
-    private drawStandardLine(context: CanvasRenderingContext2D, canvas: any,
-                             startX: number, endX: number,
-                             startY: number, endY: number,
-                             oneX: number, oneY: number) {
+    private drawULine(context: CanvasRenderingContext2D, canvas: any,
+                      startX: number, endX: number,
+                      startY: number, endY: number,
+                      oneX: number, oneY: number) {
 
         context.clearRect(0, 0, canvas.width, canvas.height);
         const lineX = oneX * this.strokeGridFactor;
@@ -344,6 +353,80 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
         context.fill();
     }
 
+    private drawReversedULine(context: CanvasRenderingContext2D, canvas: any,
+                              startX: number, endX: number,
+                              startY: number, endY: number,
+                              oneX: number, oneY: number) {
+
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        const lineX = oneX * this.strokeGridFactor;
+        const lineY = oneY * this.strokeGridFactor;
+
+        startX = startX - 1;
+        context.lineWidth = 1;
+
+        // ---->
+        context.beginPath();
+
+        /*if (this.arrowHead === 'bottom') {
+            context.moveTo(startX, startY);
+            context.lineTo(endX - lineX * 3, startY);
+        } else {
+            context.moveTo(startX + lineX, startY + lineY);
+            context.lineTo(startX + lineX, startY + lineY * 1.5);
+            context.lineTo(startX + lineX, startY - lineY / 2);
+            context.lineTo(startX + lineX, startY);
+            context.lineTo(endX - lineX * 3, startY);
+        }*/
+
+        //   --
+        //     |
+        //   --
+        // https://www.w3schools.com/tags/canvas_beziercurveto.asp
+        context.bezierCurveTo(
+            endX + lineX, startY,
+            endX + lineX, endY + lineY,
+            endX - lineX * 3, endY + lineY);
+
+        // <---
+        context.lineTo(startX + lineX, endY + lineY);
+
+        // arrow head bottom
+        if (this.arrowHead === 'bottom') {
+            context.lineTo(startX + lineX, endY + lineY * 1.5);
+            context.lineTo(startX, endY + lineY / 2);
+            context.lineTo(startX + lineX, endY - lineY / 2);
+            context.lineTo(startX + lineX, endY);
+        } else {
+            context.lineTo(startX, endY + lineY);
+            context.lineTo(startX, endY);
+        }
+
+
+        const xMove = Math.sqrt(lineX);
+        // --->
+        context.lineTo(endX - lineX * 3 - xMove, endY);
+        // --
+        //   |
+        // --
+        context.bezierCurveTo(
+            endX + xMove, endY,
+            endX + xMove, startY + lineY,
+            endX - lineX * 3 - xMove, startY + lineY);
+
+        context.lineTo(startX, startY + lineY);
+        context.closePath();
+        context.fill();
+    }
+
+    /**
+     * A method to draw an arrow on the canvas
+     * @param context is the canvas context
+     * @param leftArrowPointX is the X coordinate of the Point which is located on the left bottom part of the arrow
+     * @param leftArrowPointY is the Y coordinate of the Point which is located on the left bottom part of the arrow
+     * @param lineWidth is the Width of the arrow
+     * @param direction is the direction in which the arrow should point to
+     */
     private drawCanvasArrow(context, leftArrowPointX, leftArrowPointY, lineWidth, direction: 'left' | 'right') {
         if (direction === 'left') {
             context.lineTo(leftArrowPointX, leftArrowPointY);
@@ -361,6 +444,16 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
         }
     }
 
+    /**
+     * A Method to draw from a specific corner a curve
+     * @param context is the canvas context
+     * @param cornerX is the X coordinate of the corner
+     * @param cornerY is the Y coordinate of the corner
+     * @param radius is the radius of the curve
+     * @param direction is the direction in which the final curve should point to
+     * @param curve specifies if it should be a left or a right curve
+     * @param lineWidth for outer line curves the lineWidth is needed to adjust the radius
+     */
     private drawCurve(
         context,
         cornerX: number,
