@@ -45,12 +45,22 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
      * @memberof NgStaticGridCanvasComponent
      */
     @Input() arrowHead = 'bottom';
-    @Input() reversed: boolean;
     private _xFactor: number;
     private _yFactor: number;
     private _contentSet = false;
 
     constructor(private hostElement: ElementRef) {
+    }
+
+    private _reversed = false;
+
+    @Input('reversed')
+    get reversed(): boolean {
+        return this._reversed;
+    }
+
+    set reversed(value: boolean) {
+        this._reversed = '' + value !== 'false';
     }
 
     private _lineType = LineType.U_TYPE;
@@ -209,23 +219,23 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
             // console.info(startX, startY, endX, endY);
             switch (this._lineType) {
                 case LineType.U_TYPE:
-                    this.drawULine(context, canvas,
-                        startX, endX,
-                        startY, endY,
-                        oneX, oneY);
-                    break;
-                case LineType.S_TYPE:
                     if (this.reversed) {
                         this.drawReversedULine(context, canvas,
                             startX, endX,
                             startY, endY,
                             oneX, oneY);
                     } else {
-                        this.drawSLine(context, canvas,
+                        this.drawULine(context, canvas,
                             startX, endX,
                             startY, endY,
                             oneX, oneY);
                     }
+                    break;
+                case LineType.S_TYPE:
+                    this.drawSLine(context, canvas,
+                        startX, endX,
+                        startY, endY,
+                        oneX, oneY);
                     break;
 
             }
@@ -259,12 +269,12 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
         }
 
         // first u-turn
-        this.drawCurve(context, endX, startY, radius, 'bottom', 'right', lineX);
-        this.drawCurve(context, endX, startY + curveStep + lineY, radius, 'left', 'right', lineX);
+        this.drawCurve(context, endX, startY, radius, 'bottom', 'right', lineY);
+        this.drawCurve(context, endX, startY + curveStep + lineY, radius, 'left', 'right', lineY);
 
         // first inner u-turn
-        this.drawCurve(context, startX + lineX, startY + curveStep + lineY, radius, 'bottom', 'left');
-        this.drawCurve(context, startX + lineX, endY, radius, 'right', 'left');
+        this.drawCurve(context, startX + lineY, startY + curveStep + lineY, radius, 'bottom', 'left');
+        this.drawCurve(context, startX + lineY, endY, radius, 'right', 'left');
 
         if (this.arrowHead === 'bottom') {
             this.drawCanvasArrow(context, endX - lineX, endY, lineY, 'right');
@@ -275,12 +285,12 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
         }
 
         // second u-turn
-        this.drawCurve(context, startX, endY + lineY, radius, 'top', 'right', lineX);
-        this.drawCurve(context, startX, startY + curveStep, radius, 'right', 'right', lineX);
+        this.drawCurve(context, startX, endY + lineY, radius, 'top', 'right', lineY);
+        this.drawCurve(context, startX, startY + curveStep, radius, 'right', 'right', lineY);
 
         // second inner u-turn
-        this.drawCurve(context, endX - lineX, startY + curveStep, radius, 'top', 'left');
-        this.drawCurve(context, endX - lineX, startY + lineY, radius, 'left', 'left');
+        this.drawCurve(context, endX - lineY, startY + curveStep, radius, 'top', 'left');
+        this.drawCurve(context, endX - lineY, startY + lineY, radius, 'left', 'left');
 
         context.closePath();
         context.fill();
@@ -368,53 +378,54 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
         // ---->
         context.beginPath();
 
-        /*if (this.arrowHead === 'bottom') {
-            context.moveTo(startX, startY);
-            context.lineTo(endX - lineX * 3, startY);
+        if (this.arrowHead === 'bottom') {
+            context.moveTo(endX, startY + lineY);
+            context.lineTo(endX, startY);
+            context.lineTo(startX + lineX * 3, startY);
         } else {
-            context.moveTo(startX + lineX, startY + lineY);
-            context.lineTo(startX + lineX, startY + lineY * 1.5);
-            context.lineTo(startX + lineX, startY - lineY / 2);
-            context.lineTo(startX + lineX, startY);
-            context.lineTo(endX - lineX * 3, startY);
-        }*/
+            context.moveTo(endX - lineX, startY + lineY);
+            context.lineTo(endX - lineX, startY + lineY * 1.5);
+            context.lineTo(endX, startY + lineY / 2);
+            context.lineTo(endX - lineX, startY - lineY / 2);
+            context.lineTo(endX - lineX, startY);
+            context.lineTo(startX + lineX * 3, startY);
+        }
 
         //   --
         //     |
         //   --
         // https://www.w3schools.com/tags/canvas_beziercurveto.asp
         context.bezierCurveTo(
-            endX + lineX, startY,
-            endX + lineX, endY + lineY,
-            endX - lineX * 3, endY + lineY);
+            startX - lineX, startY,
+            startX - lineX, endY + lineY,
+            startX + lineX * 3, endY + lineY);
 
         // <---
-        context.lineTo(startX + lineX, endY + lineY);
+        context.lineTo(endX - lineX, endY + lineY);
 
         // arrow head bottom
         if (this.arrowHead === 'bottom') {
-            context.lineTo(startX + lineX, endY + lineY * 1.5);
-            context.lineTo(startX, endY + lineY / 2);
-            context.lineTo(startX + lineX, endY - lineY / 2);
-            context.lineTo(startX + lineX, endY);
+            context.lineTo(endX - lineX, endY + lineY * 1.5);
+            context.lineTo(endX, endY + lineY / 2);
+            context.lineTo(endX - lineX, endY - lineY / 2);
+            context.lineTo(endX - lineX, endY);
         } else {
-            context.lineTo(startX, endY + lineY);
-            context.lineTo(startX, endY);
+            context.lineTo(endX, endY + lineY);
+            context.lineTo(endX, endY);
         }
 
 
         const xMove = Math.sqrt(lineX);
         // --->
-        context.lineTo(endX - lineX * 3 - xMove, endY);
+        context.lineTo(startX + lineX * 3 - xMove, endY);
         // --
         //   |
         // --
         context.bezierCurveTo(
-            endX + xMove, endY,
-            endX + xMove, startY + lineY,
-            endX - lineX * 3 - xMove, startY + lineY);
+            startX + xMove, endY,
+            startX + xMove, startY + lineY,
+            startX + lineX * 3 - xMove, startY + lineY);
 
-        context.lineTo(startX, startY + lineY);
         context.closePath();
         context.fill();
     }
