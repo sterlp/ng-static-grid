@@ -365,16 +365,17 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
         context.clearRect(0, 0, canvas.width, canvas.height);
         const lineX = oneX * this.strokeGridFactor;
         const lineY = oneY * this.strokeGridFactor;
-
-        startX = startX - 1;
+        const radius = 40;
+        const curvesAmount = 1;
+        const curveStep = (endY - startY) / curvesAmount;
         context.lineWidth = 1;
 
         // ---->
         context.beginPath();
 
         if (this.arrowHead === 'bottom') {
-            context.moveTo(startX, startY);
-            context.lineTo(endX - lineX * 3, startY);
+            context.moveTo(startX, startY + lineY);
+            context.lineTo(startX, startY);
         } else {
             context.moveTo(startX + lineX, startY + lineY);
             context.lineTo(startX + lineX, startY + lineY * 1.5);
@@ -383,43 +384,22 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
             context.lineTo(startX + lineX, startY);
             context.lineTo(endX - lineX * 3, startY);
         }
-
-        //   --
-        //     |
-        //   --
-        // https://www.w3schools.com/tags/canvas_beziercurveto.asp
-        context.bezierCurveTo(
-            endX + lineX, startY,
-            endX + lineX, endY + lineY,
-            endX - lineX * 3, endY + lineY);
-
-        // <---
-        context.lineTo(startX + lineX, endY + lineY);
+        // first u-turn
+        this.drawCurve(context, endX, startY, radius, 'bottom', 'right', lineY);
+        this.drawCurve(context, endX, startY + curveStep + lineY, radius, 'left', 'right', lineY);
 
         // arrow head bottom
         if (this.arrowHead === 'bottom') {
-            context.lineTo(startX + lineX, endY + lineY * 1.5);
-            context.lineTo(startX, endY + lineY / 2);
-            context.lineTo(startX + lineX, endY - lineY / 2);
-            context.lineTo(startX + lineX, endY);
+            this.drawCanvasArrow(context, startX, endY, lineX, lineY, 'left');
         } else {
             context.lineTo(startX, endY + lineY);
             context.lineTo(startX, endY);
         }
 
+        // first inner u-turn
+        this.drawCurve(context, endX - lineY, startY + curveStep, radius, 'top', 'left');
+        this.drawCurve(context, endX - lineY, startY + lineY, radius, 'left', 'left');
 
-        const xMove = Math.sqrt(lineX);
-        // --->
-        context.lineTo(endX - lineX * 3 - xMove, endY);
-        // --
-        //   |
-        // --
-        context.bezierCurveTo(
-            endX + xMove, endY,
-            endX + xMove, startY + lineY,
-            endX - lineX * 3 - xMove, startY + lineY);
-
-        context.lineTo(startX, startY + lineY);
         context.closePath();
         context.fill();
     }
