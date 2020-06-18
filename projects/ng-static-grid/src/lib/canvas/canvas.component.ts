@@ -232,25 +232,36 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
                     }
                     break;
                 case LineType.S_TYPE:
-                    this.drawSLine(context, canvas,
-                        startX, endX,
-                        startY, endY,
-                        oneX, oneY);
+                    if (this.reversed) {
+                        this.drawReversedSLine(context, canvas,
+                            startX, endX,
+                            startY, endY,
+                            oneX, oneY);
+                    } else {
+                        this.drawSLine(context, canvas,
+                            startX, endX,
+                            startY, endY,
+                            oneX, oneY);
+                    }
                     break;
 
             }
         }
     }
 
-
-    private drawSLine(context: CanvasRenderingContext2D, canvas: any,
-                      startX: number, endX: number,
-                      startY: number, endY: number,
-                      oneX: number, oneY: number) {
+    private drawReversedSLine(
+        context: CanvasRenderingContext2D,
+        canvas: any,
+        startX: number,
+        endX: number,
+        startY: number,
+        endY: number,
+        oneX: number,
+        oneY: number) {
         context.clearRect(0, 0, canvas.width, canvas.height);
-        const lineX = oneX * this.strokeGridFactor - 10;
+        const lineX = oneX * this.strokeGridFactor;
         const lineY = oneY * this.strokeGridFactor;
-        const radius = 75;
+        const radius = 40;
         const curvesAmount = 2;
 
         const curveStep = (endY - startY) / curvesAmount;
@@ -265,7 +276,7 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
             context.lineTo(startX, startY);
         } else {
             context.moveTo(startX + lineX, startY + lineY);
-            this.drawCanvasArrow(context, startX + lineX, startY + lineY, lineY, 'left');
+            this.drawCanvasArrow(context, startX, startY, lineX, lineY, 'left');
         }
 
         // first u-turn
@@ -277,8 +288,60 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
         this.drawCurve(context, startX + lineY, endY, radius, 'right', 'left');
 
         if (this.arrowHead === 'bottom') {
-            this.drawCanvasArrow(context, endX - lineX, endY, lineY, 'right');
+            this.drawCanvasArrow(context, endX, endY, lineX, lineY, 'right');
+        } else {
+            context.lineTo(endX, endY);
+            context.lineTo(endX, endY + lineY);
+        }
 
+        // second u-turn
+        this.drawCurve(context, startX, endY + lineY, radius, 'top', 'right', lineY);
+        this.drawCurve(context, startX, startY + curveStep, radius, 'right', 'right', lineY);
+
+        // second inner u-turn
+        this.drawCurve(context, endX - lineY, startY + curveStep, radius, 'top', 'left');
+        this.drawCurve(context, endX - lineY, startY + lineY, radius, 'left', 'left');
+
+        context.closePath();
+        context.fill();
+    }
+
+
+    private drawSLine(context: CanvasRenderingContext2D, canvas: any,
+                      startX: number, endX: number,
+                      startY: number, endY: number,
+                      oneX: number, oneY: number) {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        const lineX = oneX * this.strokeGridFactor;
+        const lineY = oneY * this.strokeGridFactor;
+        const radius = 40;
+        const curvesAmount = 2;
+
+        const curveStep = (endY - startY) / curvesAmount;
+
+        startX = startX - 1;
+        context.lineWidth = 1;
+
+        context.beginPath();
+
+        if (this.arrowHead === 'bottom') {
+            context.moveTo(startX, startY + lineY);
+            context.lineTo(startX, startY);
+        } else {
+            context.moveTo(startX + lineX, startY + lineY);
+            this.drawCanvasArrow(context, startX, startY, lineX, lineY, 'left');
+        }
+
+        // first u-turn
+        this.drawCurve(context, endX, startY, radius, 'bottom', 'right', lineY);
+        this.drawCurve(context, endX, startY + curveStep + lineY, radius, 'left', 'right', lineY);
+
+        // first inner u-turn
+        this.drawCurve(context, startX + lineY, startY + curveStep + lineY, radius, 'bottom', 'left');
+        this.drawCurve(context, startX + lineY, endY, radius, 'right', 'left');
+
+        if (this.arrowHead === 'bottom') {
+            this.drawCanvasArrow(context, endX, endY, lineX, lineY, 'right');
         } else {
             context.lineTo(endX, endY);
             context.lineTo(endX, endY + lineY);
@@ -379,7 +442,7 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
         context.beginPath();
 
         if (this.arrowHead === 'bottom') {
-            context.moveTo(endX, startY + lineY);
+            context.moveTo(endX, startY);
             context.lineTo(endX, startY);
             context.lineTo(startX + lineX * 3, startY);
         } else {
@@ -435,23 +498,24 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
      * @param context is the canvas context
      * @param leftArrowPointX is the X coordinate of the Point which is located on the left bottom part of the arrow
      * @param leftArrowPointY is the Y coordinate of the Point which is located on the left bottom part of the arrow
-     * @param lineWidth is the Width of the arrow
+     * @param lineWidthX is X coordinate Width of the arrow
+     * @param lineWidthY is Y coordinate Width of the arrow
      * @param direction is the direction in which the arrow should point to
      */
-    private drawCanvasArrow(context, leftArrowPointX, leftArrowPointY, lineWidth, direction: 'left' | 'right') {
+    private drawCanvasArrow(context, leftArrowPointX, leftArrowPointY, lineWidthX, lineWidthY, direction: 'left' | 'right') {
         if (direction === 'left') {
-            context.lineTo(leftArrowPointX, leftArrowPointY);
-            context.lineTo(leftArrowPointX, leftArrowPointY + lineWidth / 2);
-            context.lineTo(leftArrowPointX - lineWidth, leftArrowPointY - lineWidth / 2);
-            context.lineTo(leftArrowPointX, leftArrowPointY - lineWidth - (lineWidth / 2));
-            context.lineTo(leftArrowPointX, leftArrowPointY - lineWidth);
+            context.lineTo(leftArrowPointX + lineWidthX, leftArrowPointY + lineWidthY);
+            context.lineTo(leftArrowPointX + lineWidthX, leftArrowPointY + lineWidthY + (lineWidthY / 2));
+            context.lineTo(leftArrowPointX, leftArrowPointY + lineWidthY / 2);
+            context.lineTo(leftArrowPointX + lineWidthX, leftArrowPointY - lineWidthY / 2);
+            context.lineTo(leftArrowPointX + lineWidthX, leftArrowPointY);
         }
         if (direction === 'right') {
-            context.lineTo(leftArrowPointX, leftArrowPointY);
-            context.lineTo(leftArrowPointX, leftArrowPointY - lineWidth / 2);
-            context.lineTo(leftArrowPointX + lineWidth, leftArrowPointY + lineWidth / 2);
-            context.lineTo(leftArrowPointX, leftArrowPointY + lineWidth + (lineWidth / 2));
-            context.lineTo(leftArrowPointX, leftArrowPointY + lineWidth);
+            context.lineTo(leftArrowPointX - lineWidthX, leftArrowPointY);
+            context.lineTo(leftArrowPointX - lineWidthX, leftArrowPointY - lineWidthY / 2);
+            context.lineTo(leftArrowPointX, leftArrowPointY + lineWidthY / 2);
+            context.lineTo(leftArrowPointX - lineWidthX, leftArrowPointY + lineWidthY + (lineWidthY / 2));
+            context.lineTo(leftArrowPointX - lineWidthX, leftArrowPointY + lineWidthY);
         }
     }
 
