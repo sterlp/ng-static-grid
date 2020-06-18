@@ -266,41 +266,40 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
 
         const curveStep = (endY - startY) / curvesAmount;
 
-        startX = startX - 1;
         context.lineWidth = 1;
 
         context.beginPath();
 
         if (this.arrowHead === 'bottom') {
-            context.moveTo(startX, startY + lineY);
-            context.lineTo(startX, startY);
+            context.moveTo(endX, startY);
+            context.lineTo(endX, startY + lineY);
         } else {
-            context.moveTo(startX + lineX, startY + lineY);
-            this.drawCanvasArrow(context, startX, startY, lineX, lineY, 'left');
+            context.moveTo(endX - lineY, startY);
+            this.drawCanvasArrow(context, endX, startY, lineX, lineY, 'right');
         }
-
-        // first u-turn
-        this.drawCurve(context, endX, startY, radius, 'bottom', 'right', lineY);
-        this.drawCurve(context, endX, startY + curveStep + lineY, radius, 'left', 'right', lineY);
 
         // first inner u-turn
-        this.drawCurve(context, startX + lineY, startY + curveStep + lineY, radius, 'bottom', 'left');
-        this.drawCurve(context, startX + lineY, endY, radius, 'right', 'left');
+        this.drawCurve(context, startX + lineY, startY + lineY, radius, 'bottom', 'left');
+        this.drawCurve(context, startX + lineY, startY + curveStep, radius, 'right', 'left');
+
+        // first u-turn
+        this.drawCurve(context, endX, startY + curveStep, radius, 'bottom', 'right', lineY);
+        this.drawCurve(context, endX, endY + lineY, radius, 'left', 'right', lineY);
 
         if (this.arrowHead === 'bottom') {
-            this.drawCanvasArrow(context, endX, endY, lineX, lineY, 'right');
+            this.drawCanvasArrow(context, startX, endY, lineX, lineY, 'left');
         } else {
-            context.lineTo(endX, endY);
-            context.lineTo(endX, endY + lineY);
+            context.lineTo(startX, endY + lineY);
+            context.lineTo(startX, endY);
         }
 
-        // second u-turn
-        this.drawCurve(context, startX, endY + lineY, radius, 'top', 'right', lineY);
-        this.drawCurve(context, startX, startY + curveStep, radius, 'right', 'right', lineY);
-
         // second inner u-turn
-        this.drawCurve(context, endX - lineY, startY + curveStep, radius, 'top', 'left');
-        this.drawCurve(context, endX - lineY, startY + lineY, radius, 'left', 'left');
+        this.drawCurve(context, endX - lineY, endY, radius, 'top', 'left');
+        this.drawCurve(context, endX - lineY, startY + curveStep + lineY, radius, 'left', 'left');
+
+        // second u-turn
+        this.drawCurve(context, startX, startY + curveStep + lineY, radius, 'top', 'right', lineY);
+        this.drawCurve(context, startX, startY, radius, 'right', 'right', lineY);
 
         context.closePath();
         context.fill();
@@ -319,7 +318,6 @@ export class NgStaticGridCanvasComponent implements OnInit, AfterContentInit {
 
         const curveStep = (endY - startY) / curvesAmount;
 
-        startX = startX - 1;
         context.lineWidth = 1;
 
         context.beginPath();
